@@ -4,6 +4,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase-browser";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
+import UserMenu from "./UserMenu";
 
 export default function NavBar() {
   const [user, setUser] = useState<User | null>(null);
@@ -16,11 +17,6 @@ export default function NavBar() {
     });
     return () => listener.subscription.unsubscribe();
   }, []);
-
-  async function signOut() {
-    await supabase.auth.signOut();
-    setUser(null);
-  }
 
   return (
     <nav className="border-b px-6 py-3 flex items-center justify-between">
@@ -39,12 +35,7 @@ export default function NavBar() {
           Join Membership
         </Link>
         {user ? (
-          <button
-            onClick={signOut}
-            className="text-sm text-gray-500 hover:text-gray-900"
-          >
-            Sign out
-          </button>
+          <UserMenu />
         ) : (
           <Link
             href="/login"
