@@ -42,3 +42,11 @@ next-env.d.ts
 
 # private docs
 /private/
+
+# question content files
+/src/lib/questions/behavioral.ts
+/src/lib/questions/case-study.ts
+/src/lib/questions/coding.ts
+/src/lib/questions/genai-architecture.ts
+/src/lib/questions/system-design.ts
+/seed*.sql
