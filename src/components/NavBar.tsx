@@ -26,7 +26,13 @@ export default function NavBar() {
     <nav className="border-b px-6 py-3 flex items-center justify-between">
       <Link href="/" className="font-bold text-gray-900 text-sm">FDE Handbook</Link>
       <div className="flex items-center gap-4">
-<Link
+        <a
+          href="mailto:chokochanghong@gmail.com"
+          className="text-sm text-gray-400 hover:text-gray-600"
+        >
+          Contact
+        </a>
+        <Link
           href="/upgrade"
           className="text-sm border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
         >
