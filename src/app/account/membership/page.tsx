@@ -32,9 +32,11 @@ export default async function MembershipPage() {
     }
   }
 
-  const isCanceling = subscription?.cancel_at_period_end ?? false;
-  const periodEnd = subscription?.current_period_end
-    ? new Date(subscription.current_period_end * 1000).toLocaleDateString()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sub = subscription as any;
+  const isCanceling = sub?.cancel_at_period_end ?? false;
+  const periodEnd = sub?.current_period_end
+    ? new Date(sub.current_period_end * 1000).toLocaleDateString()
     : null;
 
   return (
