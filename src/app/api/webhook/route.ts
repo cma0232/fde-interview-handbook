@@ -27,6 +27,21 @@ export async function POST(req: NextRequest) {
         stripe_subscription_id: session.subscription as string,
         membership_start: new Date().toISOString(),
       }).eq("id", userId);
+
+      // Notify owner
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "FDE Handbook <onboarding@resend.dev>",
+          to: "chokochanghong@gmail.com",
+          subject: "💰 New subscriber!",
+          text: `Someone just subscribed to FDE Handbook!\n\nEmail: ${session.customer_email}\nAmount: $${((session.amount_total ?? 0) / 100).toFixed(2)}\nTime: ${new Date().toLocaleString()}`,
+        }),
+      });
     }
   }
 
