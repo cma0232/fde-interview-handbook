@@ -42,6 +42,23 @@ export async function POST(req: NextRequest) {
           text: `Someone just subscribed to FDE Handbook!\n\nEmail: ${session.customer_email}\nAmount: $${((session.amount_total ?? 0) / 100).toFixed(2)}\nTime: ${new Date().toLocaleString()}`,
         }),
       });
+
+      // Welcome email to buyer
+      if (session.customer_email) {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "FDE Handbook <onboarding@resend.dev>",
+            to: session.customer_email,
+            subject: "You're a member! 🎉",
+            text: `Hi there!\n\nThank you for subscribing to FDE Handbook. Your membership is now active.\n\nAll 195 questions are unlocked — start practicing now:\nhttps://www.fdehandbook.com/practice\n\nYour membership details:\nhttps://www.fdehandbook.com/account/membership\n\nQuestions or issues? Reply to this email.\n\n— FDE Handbook`,
+          }),
+        });
+      }
     }
   }
 
