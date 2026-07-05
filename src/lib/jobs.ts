@@ -34,19 +34,25 @@ async function fetchLever(slug: string): Promise<number> {
   } catch { return 0; }
 }
 
+function favicon(domain: string) {
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+}
+
 // ─── Established companies ────────────────────────────────────────────────────
 const ESTABLISHED = [
-  { name: "Palantir",   platform: "lever",      slug: "palantir",          url: "https://www.palantir.com/careers/",              logo: "https://logo.clearbit.com/palantir.com" },
-  { name: "Databricks", platform: "greenhouse",  slug: "databricks",        url: "https://www.databricks.com/company/careers",     logo: "https://logo.clearbit.com/databricks.com" },
-  { name: "Scale AI",   platform: "greenhouse",  slug: "scaleai",           url: "https://scale.com/careers",                      logo: "https://logo.clearbit.com/scale.com" },
-  { name: "Anduril",    platform: "greenhouse",  slug: "andurilindustries", url: "https://www.anduril.com/open-roles/",             logo: "https://logo.clearbit.com/anduril.com" },
-  { name: "Cloudflare", platform: "greenhouse",  slug: "cloudflare",        url: "https://www.cloudflare.com/careers/",             logo: "https://logo.clearbit.com/cloudflare.com" },
-  { name: "MongoDB",    platform: "greenhouse",  slug: "mongodb",           url: "https://www.mongodb.com/careers",                logo: "https://logo.clearbit.com/mongodb.com" },
+  { name: "Palantir",   platform: "lever",      slug: "palantir",          url: "https://www.palantir.com/careers/",          logo: favicon("palantir.com") },
+  { name: "Databricks", platform: "greenhouse",  slug: "databricks",        url: "https://www.databricks.com/company/careers", logo: favicon("databricks.com") },
+  { name: "Scale AI",   platform: "greenhouse",  slug: "scaleai",           url: "https://scale.com/careers",                  logo: favicon("scale.com") },
+  { name: "Anduril",    platform: "greenhouse",  slug: "andurilindustries", url: "https://www.anduril.com/open-roles/",         logo: favicon("anduril.com") },
+  { name: "Cloudflare", platform: "greenhouse",  slug: "cloudflare",        url: "https://www.cloudflare.com/careers/",         logo: favicon("cloudflare.com") },
+  { name: "MongoDB",    platform: "greenhouse",  slug: "mongodb",           url: "https://www.mongodb.com/careers",            logo: favicon("mongodb.com") },
+  { name: "Datadog",    platform: "greenhouse",  slug: "datadog",           url: "https://www.datadoghq.com/careers/",          logo: favicon("datadoghq.com") },
 ] as const;
 
-// ─── Recently funded startups (update quarterly) ──────────────────────────────
+// ─── Recently funded B+ startups (update quarterly) ───────────────────────────
 const FUNDED_STARTUPS = [
-  { name: "Mistral AI", platform: "lever", slug: "mistral", url: "https://mistral.ai/careers", logo: "https://logo.clearbit.com/mistral.ai", funding: "Series B · $1B+" },
+  { name: "Mistral AI", platform: "lever",      slug: "mistral",    url: "https://mistral.ai/careers",              logo: favicon("mistral.ai"),    funding: "Series B · $1B+" },
+  { name: "Verkada",    platform: "greenhouse",  slug: "verkada",    url: "https://www.verkada.com/careers/",         logo: favicon("verkada.com"),   funding: "Series D · $205M" },
 ] as const;
 
 async function fetchCount(platform: string, slug: string): Promise<number> {

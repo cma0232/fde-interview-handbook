@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 import type { CompanyJobs } from "@/lib/jobs";
 
@@ -44,14 +43,8 @@ export default function CompanyTicker({
             className="flex items-center gap-3 shrink-0 border rounded-xl px-4 py-3 bg-white hover:shadow-md transition-shadow min-w-44"
           >
             <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-50 border flex items-center justify-center shrink-0">
-              <Image
-                src={c.logo}
-                alt={c.name}
-                width={32}
-                height={32}
-                className="object-contain"
-                unoptimized
-              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={c.logo} alt={c.name} width={32} height={32} className="object-contain" />
             </div>
             <div className="min-w-0">
               <div className="text-sm font-semibold text-gray-900 truncate">{c.name}</div>
