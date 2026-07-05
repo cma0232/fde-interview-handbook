@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase-service";
-import { getFDEJobs } from "@/lib/jobs";
+import { getAllFDEJobs } from "@/lib/jobs";
 
 export async function POST(req: NextRequest) {
   // Protect with a secret so only Vercel cron can call it
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const companies = await getFDEJobs();
+  const companies = await getAllFDEJobs();
   const week = new Date().toISOString().split("T")[0]; // YYYY-MM-DD of Monday
 
   const db = createServiceClient();

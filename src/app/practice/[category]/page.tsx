@@ -50,9 +50,9 @@ export default async function CategoryPage({
 
       <div className="flex items-center gap-3 mb-2">
         <span className="text-3xl">{cat.icon}</span>
-        <h1 className="text-2xl font-bold text-gray-900">{cat.label}</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">{cat.label}</h1>
       </div>
-      <p className="text-gray-500 mb-8">{cat.description}</p>
+      <p className="text-lg text-gray-500 mb-8">{cat.description}</p>
 
       <div className="flex flex-col gap-3">
         {questions.map((q, i) => {
@@ -63,8 +63,8 @@ export default async function CategoryPage({
               className="flex items-center justify-between border rounded-lg px-4 py-3 bg-gray-50 opacity-70 cursor-not-allowed"
             >
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-400 w-5">{i + 1}</span>
-                <span className="text-sm font-medium text-gray-700 blur-[3px] select-none">
+                <span className="text-xs font-mono text-gray-400 w-6">{String(i + 1).padStart(2, "0")}</span>
+                <span className="text-base font-medium text-gray-700 blur-[3px] select-none">
                 {FAKE_TITLES[i % FAKE_TITLES.length]}
               </span>
               </div>
@@ -79,11 +79,11 @@ export default async function CategoryPage({
             <Link
               key={q.id}
               href={`/practice/${category}/${q.id}`}
-              className="flex items-center justify-between border rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 hover:shadow-sm transition-all"
             >
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-400 w-5">{i + 1}</span>
-                <span className="text-sm font-medium text-gray-800">{q.title}</span>
+                <span className="text-xs font-mono text-gray-400 w-6">{String(i + 1).padStart(2, "0")}</span>
+                <span className="text-base font-medium text-gray-800">{q.title}</span>
               </div>
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ml-4 ${DIFFICULTY_COLOR[q.difficulty]}`}>
                 {q.difficulty}
@@ -94,16 +94,16 @@ export default async function CategoryPage({
       </div>
 
       {!isMember && (
-        <div className="mt-8 border border-gray-200 rounded-xl p-6 text-center bg-gradient-to-br from-gray-50 to-white">
-          <p className="text-sm text-gray-500 mb-1">
+        <div className="mt-8 border border-gray-200 rounded-2xl px-6 py-10 text-center bg-white shadow-sm">
+          <p className="text-base text-gray-500 mb-1">
             🔒 {questions.filter(q => !q.is_free).length} questions locked
           </p>
-          <h3 className="text-base font-semibold text-gray-900 mb-3">
-            Unlock all questions with a membership
+          <h3 className="text-xl font-bold tracking-tight text-gray-900 mb-4">
+            Unlock <mark className="bg-yellow-200 px-1 rounded">all questions</mark> with a membership
           </h3>
           <Link
             href="/upgrade"
-            className="inline-block bg-gray-900 text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            className="inline-block bg-gray-900 text-white text-base font-semibold px-7 py-3 rounded-xl hover:bg-gray-700 transition-colors"
           >
             View plans →
           </Link>

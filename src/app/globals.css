@@ -2,6 +2,38 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
+
+.animate-ticker {
+  animation: ticker linear infinite;
+}
+
+/* Reverse-direction ticker (right-scrolling row) */
+@keyframes ticker-reverse {
+  0% { transform: translateX(-33.333%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-ticker-reverse {
+  animation: ticker-reverse linear infinite;
+}
+
+/* Octopus loader — swim: bob up/down with a gentle sway */
+.octo-loader .octo-bob {
+  transform-box: view-box;
+  transform-origin: 50px 60px;
+  animation: octo-swim 1.5s ease-in-out infinite;
+}
+@keyframes octo-swim {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  25% { transform: translateY(-3px) rotate(0deg); }
+  50% { transform: translateY(0) rotate(3deg); }
+  75% { transform: translateY(-3px) rotate(0deg); }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

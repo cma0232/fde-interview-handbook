@@ -51,7 +51,7 @@ export default async function QuestionPage({
           <span className="text-xs text-gray-400">{cat.icon} {cat.label}</span>
           {locked && <span className="text-xs text-gray-400">🔒 Members only</span>}
         </div>
-        <h1 className="text-xl font-bold text-gray-900">
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900 leading-snug">
           {locked
             ? <span className="blur-[4px] select-none">Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempore</span>
             : question.title}
@@ -60,12 +60,14 @@ export default async function QuestionPage({
 
       {locked ? (
         /* Paywall */
-        <div className="border border-gray-200 rounded-xl px-6 py-10 text-center">
-          <div className="text-3xl mb-3">🔒</div>
-          <h2 className="text-base font-semibold text-gray-900 mb-1">
+        <div className="border border-gray-200 rounded-2xl px-6 py-12 text-center bg-white shadow-sm">
+          <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-gray-100 flex items-center justify-center text-xl">
+            🔒
+          </div>
+          <h2 className="text-xl font-bold tracking-tight text-gray-900 mb-1">
             This question is for members only
           </h2>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-base text-gray-500 mb-6">
             Unlock all {questions.filter(q => !q.is_free).length} questions with a membership.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -86,19 +88,19 @@ export default async function QuestionPage({
       ) : (
         <>
           {/* Question content */}
-          <div className="mb-8 text-gray-700 whitespace-pre-wrap leading-relaxed text-sm">
+          <div className="mb-8 text-gray-700 whitespace-pre-wrap leading-relaxed text-base">
             {question.content}
           </div>
 
           {/* Hints */}
           {question.hints && question.hints.length > 0 && (
             <details className="mb-6 border rounded-lg p-4">
-              <summary className="cursor-pointer text-sm font-medium text-gray-600 select-none">
+              <summary className="cursor-pointer text-base font-medium text-gray-600 select-none">
                 💡 Hints ({question.hints.length})
               </summary>
               <ul className="mt-3 space-y-2">
                 {question.hints.map((hint, i) => (
-                  <li key={i} className="text-sm text-gray-600 flex gap-2">
+                  <li key={i} className="text-base text-gray-600 flex gap-2">
                     <span className="text-gray-400">{i + 1}.</span>
                     {hint}
                   </li>
@@ -110,10 +112,10 @@ export default async function QuestionPage({
           {/* Solution */}
           {question.solution && (
             <details className="mb-8 border border-gray-200 rounded-lg p-4 bg-gray-50">
-              <summary className="cursor-pointer text-sm font-medium text-gray-700 select-none">
+              <summary className="cursor-pointer text-base font-medium text-gray-700 select-none">
                 ✅ View Solution
               </summary>
-              <div className="mt-3 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+              <div className="mt-3 text-base text-gray-700 whitespace-pre-wrap leading-relaxed">
                 {question.solution}
               </div>
             </details>
@@ -124,16 +126,16 @@ export default async function QuestionPage({
       {/* Navigation */}
       <div className="flex justify-between pt-4 border-t mt-4">
         {prevQ ? (
-          <Link href={`/practice/${category}/${prevQ.id}`} className="text-sm text-gray-500 hover:text-gray-900">
+          <Link href={`/practice/${category}/${prevQ.id}`} className="text-base text-gray-500 hover:text-gray-900">
             ← Previous
           </Link>
         ) : <span />}
         {nextQ ? (
-          <Link href={`/practice/${category}/${nextQ.id}`} className="text-sm text-gray-500 hover:text-gray-900">
+          <Link href={`/practice/${category}/${nextQ.id}`} className="text-base text-gray-500 hover:text-gray-900">
             Next →
           </Link>
         ) : (
-          <Link href={`/practice/${category}`} className="text-sm text-gray-500 hover:text-gray-900">
+          <Link href={`/practice/${category}`} className="text-base text-gray-500 hover:text-gray-900">
             ↩ Back to {cat.label}
           </Link>
         )}
