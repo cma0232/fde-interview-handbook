@@ -4,21 +4,12 @@ import { createClient } from "@/lib/supabase-browser";
 import { useState } from "react";
 
 export default function LoginPage() {
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
-
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${location.origin}/auth/callback` },
-    });
-    setSent(true);
-    setLoading(false);
-  }
 
   async function handleGoogle() {
     await supabase.auth.signInWithOAuth({
@@ -27,24 +18,28 @@ export default function LoginPage() {
     });
   }
 
-  if (sent) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center max-w-sm">
-          <div className="text-3xl mb-4">📬</div>
-          <h1 className="text-xl font-bold text-gray-900 mb-2">Check your email</h1>
-          <p className="text-gray-500 text-sm">
-            We sent a magic link to <strong>{email}</strong>. Click it to sign in.
-          </p>
-        </div>
-      </main>
-    );
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    if (mode === "signup") {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) { setError(error.message); setLoading(false); return; }
+      window.location.href = "/practice";
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) { setError(error.message); setLoading(false); return; }
+      window.location.href = "/practice";
+    }
   }
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Sign in</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">
+          {mode === "signin" ? "Sign in" : "Create account"}
+        </h1>
         <p className="text-gray-500 text-sm mb-8">Track your progress across all questions.</p>
 
         <button
@@ -66,7 +61,7 @@ export default function LoginPage() {
           <div className="flex-1 h-px bg-gray-200" />
         </div>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
             type="email"
             placeholder="you@example.com"
@@ -75,14 +70,36 @@ export default function LoginPage() {
             required
             className="border rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-gray-900"
           />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+            className="border rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-gray-900"
+          />
+          {error && <p className="text-sm text-red-500">{error}</p>}
           <button
             type="submit"
             disabled={loading}
             className="bg-gray-900 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50"
           >
-            {loading ? "Sending..." : "Send magic link"}
+            {loading ? "..." : mode === "signin" ? "Sign in" : "Sign up"}
           </button>
         </form>
+
+        <p className="mt-4 text-center text-sm text-gray-500">
+          {mode === "signin" ? (
+            <>No account?{" "}
+              <button onClick={() => { setMode("signup"); setError(""); }} className="text-gray-900 font-medium underline">Sign up</button>
+            </>
+          ) : (
+            <>Already have an account?{" "}
+              <button onClick={() => { setMode("signin"); setError(""); }} className="text-gray-900 font-medium underline">Sign in</button>
+            </>
+          )}
+        </p>
       </div>
     </main>
   );
