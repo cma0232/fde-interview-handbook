@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { getEstablishedJobs, getStartupJobs } from "@/lib/jobs";
+
+export const metadata: Metadata = {
+  title: "FDE Job Market — Open Forward Deployed Engineer Roles",
+  description: "Live count of open Forward Deployed Engineer positions at top tech companies and startups. Weekly trend data from public job boards.",
+  alternates: { canonical: "https://fdehandbook.com/trends/open-roles" },
+};
 import { createServiceClient } from "@/lib/supabase-service";
 import FDETrendChart from "@/components/FDETrendChart";
 

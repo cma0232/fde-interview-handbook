@@ -1,6 +1,27 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { unstable_cache } from "next/cache";
+
+export const metadata: Metadata = {
+  title: "FDE Interview Handbook — Forward Deployed Engineer Prep",
+  description: "1,300+ open FDE positions. The complete interview prep guide for Forward Deployed Engineer roles at Palantir, Databricks, Scale AI, Anduril, and beyond.",
+  alternates: { canonical: "https://fdehandbook.com" },
+};
+
 import { getStartupJobs, UNICORNS } from "@/lib/jobs";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "FDE Interview Handbook",
+  url: "https://fdehandbook.com",
+  description: "The complete interview prep guide for Forward Deployed Engineer roles.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: "https://fdehandbook.com/practice",
+    "query-input": "required name=search_term_string",
+  },
+};
 import { createServiceClient } from "@/lib/supabase-service";
 import FDETrendChart from "@/components/FDETrendChart";
 import CompanyTicker, { UnicornTicker } from "@/components/CompanyTicker";
@@ -35,6 +56,8 @@ export default async function HomePage() {
   ]);
 
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     <main className="min-h-screen bg-white">
       {/* Hero */}
       <div className="border-b px-6 py-20 text-center">
@@ -152,5 +175,6 @@ export default async function HomePage() {
         </div>
       </div>
     </main>
+    </>
   );
 }

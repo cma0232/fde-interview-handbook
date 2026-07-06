@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import { getQuestions } from "@/lib/questions";
 import { getMembership } from "@/lib/membership";
 import { Category } from "@/types";
+
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
+  const { category } = await params;
+  const cat = CATEGORIES.find((c) => c.id === category);
+  if (!cat) return {};
+  return {
+    title: `${cat.label} FDE Interview Questions`,
+    description: `${cat.description}. Practice ${cat.label.toLowerCase()} questions for Forward Deployed Engineer interviews at top tech companies.`,
+    alternates: { canonical: `https://fdehandbook.com/practice/${category}` },
+  };
+}
 
 const FAKE_TITLES = [
   "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod?",

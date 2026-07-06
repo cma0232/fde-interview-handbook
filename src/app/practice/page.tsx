@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
+
+export const metadata: Metadata = {
+  title: "Practice FDE Interview Questions",
+  description: "195 curated Forward Deployed Engineer interview questions across behavioral, system design, coding, GenAI architecture, and customer-facing case studies.",
+  alternates: { canonical: "https://fdehandbook.com/practice" },
+};
 
 export default function PracticePage() {
 

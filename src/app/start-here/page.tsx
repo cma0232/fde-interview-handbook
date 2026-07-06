@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
+
+export const metadata: Metadata = {
+  title: "Start Here — What is a Forward Deployed Engineer?",
+  description: "Learn what Forward Deployed Engineers do, how FDE roles differ from SWE, and follow a 30-day prep plan to land your first FDE offer.",
+  alternates: { canonical: "https://fdehandbook.com/start-here" },
+};
 
 const PLAN = [
   {

@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { createServiceClient } from "@/lib/supabase-service";
 
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "FDE Industry News — Daily AI Deployment Updates",
+  description: "Daily news on Forward Deployed Engineers, AI deployment, and the companies hiring FDEs. Stay current on the FDE job market.",
+  alternates: { canonical: "https://fdehandbook.com/trends/news" },
+};
 
 type NewsItem = {
   hn_id: string;

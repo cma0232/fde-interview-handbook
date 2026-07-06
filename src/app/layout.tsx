@@ -15,9 +15,29 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const BASE_URL = "https://fdehandbook.com";
+
 export const metadata: Metadata = {
-  title: "Forward Deployed Engineer Interview Handbook",
-  description: "The complete interview prep guide for FDE roles at Palantir, Anduril, Scale AI, and beyond. Behavioral, System Design, Coding, GenAI Architecture, and Case Study questions.",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "FDE Interview Handbook — Forward Deployed Engineer Prep",
+    template: "%s | FDE Interview Handbook",
+  },
+  description: "The complete interview prep guide for Forward Deployed Engineer roles at Palantir, Databricks, Scale AI, Anduril, and beyond. 195 curated questions across behavioral, system design, coding, GenAI architecture, and case studies.",
+  keywords: ["forward deployed engineer", "FDE interview", "Palantir FDE", "Databricks FDE", "Scale AI interview", "Anduril interview prep", "FDE questions", "forward deployed engineer interview prep"],
+  openGraph: {
+    type: "website",
+    siteName: "FDE Interview Handbook",
+    title: "Forward Deployed Engineer Interview Handbook",
+    description: "The complete prep guide for FDE roles at Palantir, Databricks, Scale AI, Anduril & beyond.",
+    url: BASE_URL,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Forward Deployed Engineer Interview Handbook",
+    description: "The complete prep guide for FDE roles at Palantir, Databricks, Scale AI, Anduril & beyond.",
+  },
+  alternates: { canonical: BASE_URL },
 };
 
 export default function RootLayout({
