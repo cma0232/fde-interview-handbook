@@ -1,34 +1,39 @@
-import { getEstablishedJobs, getFundedStartupJobs } from "@/lib/jobs";
+import { unstable_cache } from "next/cache";
+import { getEstablishedJobs, getStartupJobs } from "@/lib/jobs";
 import { createServiceClient } from "@/lib/supabase-service";
 import FDETrendChart from "@/components/FDETrendChart";
 
 export const revalidate = 3600;
 
-async function getTrendData() {
-  const db = createServiceClient();
-  const { data } = await db
-    .from("fde_job_snapshots")
-    .select("week, count")
-    .order("week", { ascending: true });
+const getTrendData = unstable_cache(
+  async () => {
+    const db = createServiceClient();
+    const { data } = await db
+      .from("fde_job_snapshots")
+      .select("week, count")
+      .order("week", { ascending: true });
 
-  if (!data || data.length === 0) return [];
+    if (!data || data.length === 0) return [];
 
-  const byWeek = new Map<string, number>();
-  for (const row of data) {
-    byWeek.set(row.week, (byWeek.get(row.week) ?? 0) + row.count);
-  }
+    const byWeek = new Map<string, number>();
+    for (const row of data) {
+      byWeek.set(row.week, (byWeek.get(row.week) ?? 0) + row.count);
+    }
 
-  return Array.from(byWeek.entries()).map(([week, total]) => ({ week, total }));
-}
+    return Array.from(byWeek.entries()).map(([week, total]) => ({ week, total }));
+  },
+  ["fde-trend-data"],
+  { revalidate: 259200 } // 3 days
+);
 
 export default async function OpenRolesPage() {
-  const [established, funded, trendData] = await Promise.all([
+  const [established, startups, trendData] = await Promise.all([
     getEstablishedJobs(),
-    getFundedStartupJobs(),
+    getStartupJobs(),
     getTrendData(),
   ]);
 
-  const totalJobs = [...established, ...funded].reduce((sum, c) => sum + c.count, 0);
+  const totalJobs = [...established, ...startups].reduce((sum, c) => sum + c.count, 0);
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-14">
@@ -71,14 +76,14 @@ export default async function OpenRolesPage() {
         </div>
       </section>
 
-      {/* Funded startups */}
-      {funded.length > 0 && (
+      {/* Startups */}
+      {startups.length > 0 && (
         <section>
           <h2 className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-4">
-            Recently funded · hiring FDEs
+            Startups hiring FDEs
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {funded.map((c) => (
+            {startups.map((c) => (
               <a
                 key={c.name}
                 href={c.url}
