@@ -112,6 +112,9 @@ export default function NavBar() {
         <Link href="/start-here" className="text-[15px] text-gray-600 hover:text-gray-900 transition-colors">
           Start Here
         </Link>
+        <Link href="/companies" className="text-[15px] text-gray-600 hover:text-gray-900 transition-colors">
+          Companies
+        </Link>
         <NavDropdown label="Practice" items={practiceItems} />
       </div>
 

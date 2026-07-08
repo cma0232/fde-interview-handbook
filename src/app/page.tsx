@@ -4,7 +4,7 @@ import { unstable_cache } from "next/cache";
 
 export const metadata: Metadata = {
   title: "FDE Interview Handbook — Forward Deployed Engineer Prep",
-  description: "1,300+ open FDE positions. The complete interview prep guide for Forward Deployed Engineer roles at Palantir, Databricks, Scale AI, Anduril, and beyond.",
+  description: "2,186+ open FDE positions. The complete interview prep guide for Forward Deployed Engineer roles at Palantir, Databricks, Scale AI, Anduril, and beyond.",
   alternates: { canonical: "https://fdehandbook.com" },
 };
 
@@ -63,15 +63,15 @@ export default async function HomePage() {
       <div className="border-b px-6 py-20 text-center">
         <div className="inline-flex items-center gap-2 bg-gray-100 border border-gray-200 text-gray-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
           <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          1,300+ open FDE positions right now
+          2,186+ open FDE positions right now
         </div>
         <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 max-w-3xl mx-auto leading-tight">
           <mark className="bg-yellow-200 px-2 rounded-md">Forward Deployed Engineer</mark>{" "}
           Interview Handbook
         </h1>
         <p className="mt-6 text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-          The complete interview prep guide for FDE roles at Palantir, Databricks,
-          Scale AI, Anduril, and beyond.
+          The only prep guide built for FDE interviews — agentic system design,
+          live demo rounds, customer-facing scenarios, and LLM deployment questions.
         </p>
         <div className="mt-9 flex gap-3 justify-center flex-wrap">
           <Link
