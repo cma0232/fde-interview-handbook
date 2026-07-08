@@ -4,7 +4,7 @@ import { unstable_cache } from "next/cache";
 
 export const metadata: Metadata = {
   title: "FDE Interview Handbook — Forward Deployed Engineer Prep",
-  description: "2,186+ open FDE positions. The complete interview prep guide for Forward Deployed Engineer roles at Palantir, Databricks, Scale AI, Anduril, and beyond.",
+  description: "2,100+ open FDE positions. The complete interview prep guide for Forward Deployed Engineer roles at Palantir, Databricks, Scale AI, Anduril, and beyond.",
   alternates: { canonical: "https://fdehandbook.com" },
 };
 
@@ -49,11 +49,18 @@ const getTrendData = unstable_cache(
   { revalidate: 259200 } // 3 days
 );
 
+function floorToHundred(n: number) {
+  return Math.floor(n / 100) * 100;
+}
+
 export default async function HomePage() {
   const [startups, trendData] = await Promise.all([
     getStartupJobs(),
     getTrendData(),
   ]);
+
+  const latestTotal = trendData.length > 0 ? trendData[trendData.length - 1].total : 0;
+  const displayCount = floorToHundred(latestTotal).toLocaleString("en-US");
 
   return (
     <>
@@ -63,7 +70,7 @@ export default async function HomePage() {
       <div className="border-b px-6 py-20 text-center">
         <div className="inline-flex items-center gap-2 bg-gray-100 border border-gray-200 text-gray-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
           <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          2,186+ open FDE positions right now
+          {displayCount}+ open FDE positions right now
         </div>
         <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 max-w-3xl mx-auto leading-tight">
           <mark className="bg-yellow-200 px-2 rounded-md">Forward Deployed Engineer</mark>{" "}

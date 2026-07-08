@@ -41,6 +41,7 @@ export default async function OpenRolesPage() {
   ]);
 
   const totalJobs = [...established, ...startups].reduce((sum, c) => sum + c.count, 0);
+  const displayJobs = (Math.floor(totalJobs / 100) * 100).toLocaleString("en-US");
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-14">
@@ -48,7 +49,7 @@ export default async function OpenRolesPage() {
         <div className="text-xs text-gray-400 font-medium uppercase tracking-widest mb-2">Trends · Open Roles</div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">FDE Job Market</h1>
         <p className="text-gray-500">
-          {totalJobs}+ open Forward Deployed Engineer positions tracked weekly from public job boards.
+          {displayJobs}+ open Forward Deployed Engineer positions tracked weekly from public job boards.
         </p>
       </div>
 
