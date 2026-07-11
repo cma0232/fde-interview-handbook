@@ -46,7 +46,7 @@ const getTrendData = unstable_cache(
     return Array.from(byWeek.entries()).map(([week, total]) => ({ week, total }));
   },
   ["fde-trend-data"],
-  { revalidate: 259200 } // 3 days
+  { revalidate: 86400 } // 1 day
 );
 
 function floorToHundred(n: number) {
