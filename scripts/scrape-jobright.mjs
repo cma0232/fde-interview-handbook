@@ -40,7 +40,7 @@ async function scrape() {
 async function upsert(count) {
   const week = new Date().toISOString().split("T")[0];
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/fde_job_snapshots`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/fde_job_snapshots?on_conflict=week,company`, {
     method: "POST",
     headers: {
       "apikey": SUPABASE_SERVICE_KEY,
