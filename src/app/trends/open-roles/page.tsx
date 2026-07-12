@@ -12,6 +12,14 @@ import FDETrendChart from "@/components/FDETrendChart";
 
 export const revalidate = 3600;
 
+function getMondayOfWeek(dateStr: string): string {
+  const d = new Date(dateStr);
+  const day = d.getUTCDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setUTCDate(d.getUTCDate() + diff);
+  return d.toISOString().split("T")[0];
+}
+
 const getTrendData = unstable_cache(
   async () => {
     const db = createServiceClient();
@@ -22,12 +30,19 @@ const getTrendData = unstable_cache(
 
     if (!data || data.length === 0) return [];
 
-    const byWeek = new Map<string, number>();
+    const byWeek = new Map<string, number[]>();
     for (const row of data) {
-      byWeek.set(row.week, (byWeek.get(row.week) ?? 0) + row.count);
+      const monday = getMondayOfWeek(row.week);
+      if (!byWeek.has(monday)) byWeek.set(monday, []);
+      byWeek.get(monday)!.push(row.count);
     }
 
-    return Array.from(byWeek.entries()).map(([week, total]) => ({ week, total }));
+    return Array.from(byWeek.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([week, counts]) => ({
+        week,
+        total: Math.round(counts.reduce((s, c) => s + c, 0) / counts.length),
+      }));
   },
   ["fde-trend-data"],
   { revalidate: 86400 } // 1 day
