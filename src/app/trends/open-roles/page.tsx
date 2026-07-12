@@ -12,10 +12,10 @@ import FDETrendChart from "@/components/FDETrendChart";
 
 export const revalidate = 3600;
 
-function getMondayOfWeek(dateStr: string): string {
+function getNextMonday(dateStr: string): string {
   const d = new Date(dateStr);
   const day = d.getUTCDay();
-  const diff = day === 0 ? -6 : 1 - day;
+  const diff = day === 0 ? 1 : 8 - day;
   d.setUTCDate(d.getUTCDate() + diff);
   return d.toISOString().split("T")[0];
 }
@@ -32,7 +32,7 @@ const getTrendData = unstable_cache(
 
     const byWeek = new Map<string, number[]>();
     for (const row of data) {
-      const monday = getMondayOfWeek(row.week);
+      const monday = getNextMonday(row.week);
       if (!byWeek.has(monday)) byWeek.set(monday, []);
       byWeek.get(monday)!.push(row.count);
     }
