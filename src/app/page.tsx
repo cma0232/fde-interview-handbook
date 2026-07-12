@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { unstable_cache } from "next/cache";
+import { getTrendData, getLatestJobCount } from "@/lib/jobSnapshots";
 
 export const metadata: Metadata = {
   title: "FDE Interview Handbook — Forward Deployed Engineer Prep",
@@ -22,36 +22,21 @@ const jsonLd = {
     "query-input": "required name=search_term_string",
   },
 };
-import { createServiceClient } from "@/lib/supabase-service";
 import FDETrendChart from "@/components/FDETrendChart";
 import CompanyTicker, { UnicornTicker } from "@/components/CompanyTicker";
 
 export const revalidate = 3600;
 
-const getLatestJobCount = unstable_cache(
-  async () => {
-    const db = createServiceClient();
-    const { data } = await db
-      .from("fde_job_snapshots")
-      .select("count")
-      .eq("company", "TOTAL")
-      .order("week", { ascending: false })
-      .limit(1)
-      .single();
-    return data?.count ?? 0;
-  },
-  ["fde-latest-count"],
-  { revalidate: 86400 } // 1 day
-);
 
 function floorToHundred(n: number) {
   return Math.floor(n / 100) * 100;
 }
 
 export default async function HomePage() {
-  const [startups, latestCount] = await Promise.all([
+  const [startups, latestCount, trendData] = await Promise.all([
     getStartupJobs(),
     getLatestJobCount(),
+    getTrendData(),
   ]);
 
   const displayCount = floorToHundred(latestCount).toLocaleString("en-US");
