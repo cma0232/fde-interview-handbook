@@ -28,39 +28,19 @@ import CompanyTicker, { UnicornTicker } from "@/components/CompanyTicker";
 
 export const revalidate = 3600;
 
-function getNextMonday(dateStr: string): string {
-  const d = new Date(dateStr);
-  const day = d.getUTCDay(); // 0=Sun, 1=Mon, ...
-  const diff = day === 0 ? 1 : 8 - day;
-  d.setUTCDate(d.getUTCDate() + diff);
-  return d.toISOString().split("T")[0];
-}
-
-const getTrendData = unstable_cache(
+const getLatestJobCount = unstable_cache(
   async () => {
     const db = createServiceClient();
     const { data } = await db
       .from("fde_job_snapshots")
-      .select("week, count")
-      .order("week", { ascending: true });
-
-    if (!data || data.length === 0) return [];
-
-    const byWeek = new Map<string, number[]>();
-    for (const row of data) {
-      const monday = getNextMonday(row.week);
-      if (!byWeek.has(monday)) byWeek.set(monday, []);
-      byWeek.get(monday)!.push(row.count);
-    }
-
-    return Array.from(byWeek.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([week, counts]) => ({
-        week,
-        total: Math.round(counts.reduce((s, c) => s + c, 0) / counts.length),
-      }));
+      .select("count")
+      .eq("company", "TOTAL")
+      .order("week", { ascending: false })
+      .limit(1)
+      .single();
+    return data?.count ?? 0;
   },
-  ["fde-trend-data"],
+  ["fde-latest-count"],
   { revalidate: 86400 } // 1 day
 );
 
@@ -69,13 +49,12 @@ function floorToHundred(n: number) {
 }
 
 export default async function HomePage() {
-  const [startups, trendData] = await Promise.all([
+  const [startups, latestCount] = await Promise.all([
     getStartupJobs(),
-    getTrendData(),
+    getLatestJobCount(),
   ]);
 
-  const latestTotal = trendData.length > 0 ? trendData[trendData.length - 1].total : 0;
-  const displayCount = floorToHundred(latestTotal).toLocaleString("en-US");
+  const displayCount = floorToHundred(latestCount).toLocaleString("en-US");
 
   return (
     <>

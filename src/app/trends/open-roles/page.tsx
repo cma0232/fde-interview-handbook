@@ -14,11 +14,12 @@ export const revalidate = 3600;
 
 function getNextMonday(dateStr: string): string {
   const d = new Date(dateStr);
-  const day = d.getUTCDay();
+  const day = d.getUTCDay(); // 0=Sun, 1=Mon, ...
   const diff = day === 0 ? 1 : 8 - day;
   d.setUTCDate(d.getUTCDate() + diff);
   return d.toISOString().split("T")[0];
 }
+
 
 const getTrendData = unstable_cache(
   async () => {
@@ -37,7 +38,10 @@ const getTrendData = unstable_cache(
       byWeek.get(monday)!.push(row.count);
     }
 
+    const today = new Date().toISOString().split("T")[0];
+
     return Array.from(byWeek.entries())
+      .filter(([week]) => week <= today)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([week, counts]) => ({
         week,
