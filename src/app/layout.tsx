@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
-import { Nunito, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import NavBar from "@/components/NavBar";
 import { Analytics } from "@vercel/analytics/next";
 import WelcomeEmailTrigger from "@/components/WelcomeEmailTrigger";
 import "./globals.css";
-
-const nunito = Nunito({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -63,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${nunito.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <NavBar />

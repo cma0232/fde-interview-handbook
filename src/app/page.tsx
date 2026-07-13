@@ -61,10 +61,10 @@ export default async function HomePage() {
         </p>
         <div className="mt-9 flex gap-3 justify-center flex-wrap">
           <Link
-            href="/practice"
+            href="/start-here"
             className="bg-gray-900 text-white text-base font-semibold px-7 py-3.5 rounded-xl hover:bg-gray-700 transition-colors"
           >
-            Start practicing free →
+            Start Interview Prep →
           </Link>
           <a
             href="https://discord.gg/GnUdge3k3"
@@ -146,17 +146,20 @@ export default async function HomePage() {
       {/* Start here CTA */}
       <div className="max-w-4xl mx-auto px-6 py-16">
         <div className="border border-gray-200 rounded-2xl px-8 py-14 text-center bg-white shadow-sm">
+          <div className="inline-flex items-center gap-2 bg-gray-100 border border-gray-200 text-gray-600 text-sm font-semibold px-4 py-1.5 rounded-full mb-5">
+            📅 30-day structured prep plan
+          </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">Ready to prep?</h2>
           <p className="mt-4 text-lg text-gray-500 max-w-lg mx-auto leading-relaxed">
-            <mark className="bg-yellow-200 px-1.5 rounded-md font-semibold text-gray-900">195 curated questions</mark>{" "}
-            across behavioral, system design, coding, GenAI architecture, and
-            customer-facing case studies.
+            Follow the{" "}
+            <mark className="bg-yellow-200 px-1.5 rounded-md font-semibold text-gray-900">30-day FDE study plan</mark>{" "}
+            — daily objectives, core tasks, drills, and deliverables. Track your progress as you go.
           </p>
           <Link
-            href="/practice"
+            href="/start-here"
             className="mt-8 inline-block bg-gray-900 text-white text-base font-semibold px-8 py-3.5 rounded-xl hover:bg-gray-700 transition-colors"
           >
-            Start here →
+            Start Interview Prep →
           </Link>
         </div>
       </div>

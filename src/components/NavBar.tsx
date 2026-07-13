@@ -80,8 +80,8 @@ export default function NavBar() {
   }, []);
 
   const timeSaversItems = [
-    { href: "/start-here", label: "Study Plans", description: "Structured prep roadmaps" },
-    { href: "/companies", label: "Company Guides", description: "FDE roles by company" },
+    { href: "/start-here", label: "Study Plans" },
+    { href: "/companies", label: "Company Guides" },
   ];
 
   return (
