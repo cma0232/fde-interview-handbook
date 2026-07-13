@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getEstablishedJobs, getStartupJobs } from "@/lib/jobs";
-import { getTrendData } from "@/lib/jobSnapshots";
+import { getTrendData, getLatestJobCount } from "@/lib/jobSnapshots";
 
 export const metadata: Metadata = {
   title: "FDE Job Market — Open Forward Deployed Engineer Roles",
@@ -12,14 +12,14 @@ import FDETrendChart from "@/components/FDETrendChart";
 export const revalidate = 3600;
 
 export default async function OpenRolesPage() {
-  const [established, startups, trendData] = await Promise.all([
+  const [established, startups, trendData, latestCount] = await Promise.all([
     getEstablishedJobs(),
     getStartupJobs(),
     getTrendData(),
+    getLatestJobCount(),
   ]);
 
-  const totalJobs = [...established, ...startups].reduce((sum, c) => sum + c.count, 0);
-  const displayJobs = (Math.floor(totalJobs / 100) * 100).toLocaleString("en-US");
+  const displayJobs = (Math.floor(latestCount / 100) * 100).toLocaleString("en-US");
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-14">
