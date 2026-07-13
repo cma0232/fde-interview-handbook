@@ -37,7 +37,7 @@ export const getTrendData = unstable_cache(
       }));
   },
   ["fde-trend-data"],
-  { revalidate: 86400 }
+  { revalidate: 3600 } // 1 hour
 );
 
 export const getLatestJobCount = unstable_cache(
@@ -53,5 +53,5 @@ export const getLatestJobCount = unstable_cache(
     return data?.count ?? 0;
   },
   ["fde-latest-count"],
-  { revalidate: 86400 }
+  { revalidate: 3600 } // 1 hour
 );
