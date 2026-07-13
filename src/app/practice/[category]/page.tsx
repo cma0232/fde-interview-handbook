@@ -5,6 +5,14 @@ import { CATEGORIES } from "@/lib/categories";
 import { getQuestions } from "@/lib/questions";
 import { getMembership } from "@/lib/membership";
 import { Category } from "@/types";
+import * as LucideIcons from "lucide-react";
+import { LucideProps } from "lucide-react";
+
+function Icon({ name, ...props }: { name: string } & LucideProps) {
+  const Comp = (LucideIcons as Record<string, React.ComponentType<LucideProps>>)[name];
+  if (!Comp) return null;
+  return <Comp {...props} />;
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category } = await params;
@@ -61,7 +69,7 @@ export default async function CategoryPage({
       </div>
 
       <div className="flex items-center gap-3 mb-2">
-        <span className="text-3xl">{cat.icon}</span>
+        <Icon name={cat.icon} size={28} className="text-gray-800" />
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">{cat.label}</h1>
       </div>
       <p className="text-lg text-gray-500 mb-8">{cat.description}</p>

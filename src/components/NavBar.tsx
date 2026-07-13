@@ -79,23 +79,9 @@ export default function NavBar() {
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  const practiceItems = CATEGORIES.map((c) => ({
-    href: `/practice/${c.id}`,
-    label: `${c.icon} ${c.label}`,
-    description: c.description,
-  }));
-
-  const trendsItems = [
-    {
-      href: "/trends/open-roles",
-      label: "Open Roles",
-      description: "Live FDE openings & weekly trend",
-    },
-    {
-      href: "/trends/news",
-      label: "Industry News",
-      description: "Daily FDE & AI deployment news",
-    },
+  const timeSaversItems = [
+    { href: "/start-here", label: "Study Plans", description: "Structured prep roadmaps" },
+    { href: "/companies", label: "Company Guides", description: "FDE roles by company" },
   ];
 
   return (
@@ -108,14 +94,16 @@ export default function NavBar() {
       </Link>
 
       <div className="flex items-center gap-5">
-        <NavDropdown label="Trends" items={trendsItems} />
         <Link href="/start-here" className="text-[15px] text-gray-600 hover:text-gray-900 transition-colors">
-          Start Here
+          Get Started
         </Link>
-        <Link href="/companies" className="text-[15px] text-gray-600 hover:text-gray-900 transition-colors">
-          Companies
+        <Link href="/practice" className="text-[15px] text-gray-600 hover:text-gray-900 transition-colors">
+          Practice Questions
         </Link>
-        <NavDropdown label="Practice" items={practiceItems} />
+        <NavDropdown label="Time Savers" items={timeSaversItems} />
+        <Link href="/trends/news" className="text-[15px] text-gray-600 hover:text-gray-900 transition-colors">
+          Industry News
+        </Link>
       </div>
 
       <div className="flex items-center gap-3">
