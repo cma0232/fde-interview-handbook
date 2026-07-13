@@ -9,7 +9,7 @@ import * as LucideIcons from "lucide-react";
 import { LucideProps } from "lucide-react";
 
 function Icon({ name, ...props }: { name: string } & LucideProps) {
-  const Comp = (LucideIcons as Record<string, React.ComponentType<LucideProps>>)[name];
+  const Comp = (LucideIcons as unknown as Record<string, React.ComponentType<LucideProps>>)[name];
   if (!Comp) return null;
   return <Comp {...props} />;
 }
