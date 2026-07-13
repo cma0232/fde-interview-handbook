@@ -80,16 +80,14 @@ export default async function CategoryPage({
           return locked ? (
             <div
               key={q.id}
-              className="flex items-center justify-between border rounded-lg px-4 py-3 bg-gray-50 opacity-70 cursor-not-allowed"
+              className="flex items-center border rounded-lg px-4 py-3 bg-gray-50 opacity-70 cursor-not-allowed"
             >
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-mono text-gray-400 w-6">{String(i + 1).padStart(2, "0")}</span>
-                <span className="text-base font-medium text-gray-700 blur-[3px] select-none">
+              <span className="text-xs font-mono text-gray-400 w-6 shrink-0">{String(i + 1).padStart(2, "0")}</span>
+              <span className="text-base font-medium text-gray-700 blur-[3px] select-none flex-1 min-w-0 truncate mx-3">
                 {FAKE_TITLES[i % FAKE_TITLES.length]}
               </span>
-              </div>
-              <div className="flex items-center gap-2 shrink-0 ml-4">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${DIFFICULTY_COLOR[q.difficulty]}`}>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium w-14 text-center ${DIFFICULTY_COLOR[q.difficulty]}`}>
                   {q.difficulty}
                 </span>
                 <span className="text-gray-400">🔒</span>
@@ -99,13 +97,11 @@ export default async function CategoryPage({
             <Link
               key={q.id}
               href={`/practice/${category}/${q.id}`}
-              className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 hover:shadow-sm transition-all"
+              className="flex items-center border border-gray-200 rounded-xl px-4 py-3 hover:border-gray-400 hover:shadow-sm transition-all"
             >
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-mono text-gray-400 w-6">{String(i + 1).padStart(2, "0")}</span>
-                <span className="text-base font-medium text-gray-800">{q.title}</span>
-              </div>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ml-4 ${DIFFICULTY_COLOR[q.difficulty]}`}>
+              <span className="text-xs font-mono text-gray-400 w-6 shrink-0">{String(i + 1).padStart(2, "0")}</span>
+              <span className="text-base font-medium text-gray-800 flex-1 min-w-0 truncate mx-3">{q.title}</span>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 w-14 text-center ${DIFFICULTY_COLOR[q.difficulty]}`}>
                 {q.difficulty}
               </span>
             </Link>
