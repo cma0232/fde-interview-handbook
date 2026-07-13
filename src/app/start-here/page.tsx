@@ -133,7 +133,7 @@ export default function StudyPlansPage() {
   const [user, setUser] = useState<User | null>(null);
   const [shakeKey, setShakeKey] = useState(0);
   const [modal, setModal] = useState<Day30 | null>(null);
-  const [questionsMap, setQuestionsMap] = useState<Record<string, { id: string; category: string; title: string; difficulty: string }>>({});
+  const [questionsMap, setQuestionsMap] = useState<Record<string, { id: string; category: string; title: string | null; difficulty: string }>>({});
   const supabase = createClient();
 
   useEffect(() => {
@@ -182,17 +182,14 @@ export default function StudyPlansPage() {
 
   useEffect(() => {
     const allIds = Object.values(DAY_QUESTIONS).flat().map((q) => q.id);
-    supabase
-      .from("questions")
-      .select("id, category, title, difficulty")
-      .in("id", allIds)
-      .then(({ data }) => {
-        if (!data?.length) return;
-        const map: Record<string, { id: string; category: string; title: string; difficulty: string }> = {};
-        data.forEach((q) => { map[q.id] = q; });
+    fetch(`/api/study-plan-questions?ids=${allIds.join(",")}`)
+      .then((r) => r.json())
+      .then(({ questions }) => {
+        if (!questions?.length) return;
+        const map: Record<string, { id: string; category: string; title: string | null; difficulty: string }> = {};
+        questions.forEach((q: { id: string; category: string; title: string | null; difficulty: string }) => { map[q.id] = q; });
         setQuestionsMap(map);
       });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const allItems = plan30.flatMap((d) => [
@@ -317,7 +314,7 @@ export default function StudyPlansPage() {
               {(() => {
                 const dayQs = (DAY_QUESTIONS[modal.day] ?? [])
                   .map((q) => questionsMap[q.id])
-                  .filter((q): q is NonNullable<typeof q> => q != null);
+                  .filter((q): q is NonNullable<typeof q> => q != null && q.title != null);
                 if (!dayQs.length) return null;
                 return (
                   <div className="rounded-xl overflow-hidden border border-indigo-100 bg-indigo-50">
