@@ -133,7 +133,7 @@ export default function StudyPlansPage() {
   const [user, setUser] = useState<User | null>(null);
   const [shakeKey, setShakeKey] = useState(0);
   const [modal, setModal] = useState<Day30 | null>(null);
-  const [modalQuestions, setModalQuestions] = useState<{ id: string; category: string; title: string; difficulty: string }[]>([]);
+  const [questionsMap, setQuestionsMap] = useState<Record<string, { id: string; category: string; title: string; difficulty: string }>>({});
   const supabase = createClient();
 
   useEffect(() => {
@@ -181,22 +181,19 @@ export default function StudyPlansPage() {
   }, [checked, user, supabase]);
 
   useEffect(() => {
-    if (!modal) { setModalQuestions([]); return; }
-    const dayQs = DAY_QUESTIONS[modal.day];
-    if (!dayQs?.length) { setModalQuestions([]); return; }
-    const ids = dayQs.map((q) => q.id);
+    const allIds = Object.values(DAY_QUESTIONS).flat().map((q) => q.id);
     supabase
       .from("questions")
       .select("id, category, title, difficulty")
-      .in("id", ids)
-      .eq("status", "published")
+      .in("id", allIds)
       .then(({ data }) => {
-        if (!data) return;
-        // preserve curated order
-        const ordered = ids.map((id) => data.find((q) => q.id === id)).filter(Boolean) as typeof data;
-        setModalQuestions(ordered);
+        if (!data?.length) return;
+        const map: Record<string, { id: string; category: string; title: string; difficulty: string }> = {};
+        data.forEach((q) => { map[q.id] = q; });
+        setQuestionsMap(map);
       });
-  }, [modal]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const allItems = plan30.flatMap((d) => [
     ...d.core.map((_, i) => taskKey(d.day, "c", i)),
@@ -317,34 +314,40 @@ export default function StudyPlansPage() {
             </div>
 
             <div className="px-6 py-4 space-y-4">
-              {modalQuestions.length > 0 && (
-                <div className="rounded-xl overflow-hidden border border-indigo-100 bg-indigo-50">
-                  <div className="px-4 py-2.5 bg-indigo-600 flex items-center gap-2">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                    <span className="text-xs font-bold text-white uppercase tracking-wider">Practice Questions</span>
-                    <span className="ml-auto text-xs text-indigo-200">{modalQuestions.length} questions</span>
+              {(() => {
+                const dayQs = (DAY_QUESTIONS[modal.day] ?? [])
+                  .map((q) => questionsMap[q.id])
+                  .filter((q): q is NonNullable<typeof q> => q != null);
+                if (!dayQs.length) return null;
+                return (
+                  <div className="rounded-xl overflow-hidden border border-indigo-100 bg-indigo-50">
+                    <div className="px-4 py-2.5 bg-indigo-600 flex items-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                      <span className="text-xs font-bold text-white uppercase tracking-wider">Practice Questions</span>
+                      <span className="ml-auto text-xs text-indigo-200">{dayQs.length} questions</span>
+                    </div>
+                    <div className="divide-y divide-indigo-100">
+                      {dayQs.map((q) => (
+                        <Link
+                          key={q.id}
+                          href={`/practice/${q.category}/${q.id}`}
+                          onClick={() => setModal(null)}
+                          className="flex items-center gap-2.5 px-4 py-3 hover:bg-indigo-100/60 transition-colors group"
+                        >
+                          <span className={`text-xs px-1.5 py-0.5 rounded font-semibold shrink-0 ${CATEGORY_COLOR[q.category] ?? "bg-gray-100 text-gray-500"}`}>
+                            {CATEGORY_LABEL[q.category] ?? q.category}
+                          </span>
+                          <span className={`text-xs px-1.5 py-0.5 rounded font-medium shrink-0 ${DIFFICULTY_COLOR[q.difficulty] ?? ""}`}>
+                            {q.difficulty}
+                          </span>
+                          <span className="text-sm text-gray-800 group-hover:text-gray-900 line-clamp-1 flex-1">{q.title}</span>
+                          <svg className="w-3.5 h-3.5 text-indigo-300 group-hover:text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                  <div className="divide-y divide-indigo-100">
-                    {modalQuestions.map((q) => (
-                      <Link
-                        key={q.id}
-                        href={`/practice/${q.category}/${q.id}`}
-                        onClick={() => setModal(null)}
-                        className="flex items-center gap-2.5 px-4 py-3 hover:bg-indigo-100/60 transition-colors group"
-                      >
-                        <span className={`text-xs px-1.5 py-0.5 rounded font-semibold shrink-0 ${CATEGORY_COLOR[q.category] ?? "bg-gray-100 text-gray-500"}`}>
-                          {CATEGORY_LABEL[q.category] ?? q.category}
-                        </span>
-                        <span className={`text-xs px-1.5 py-0.5 rounded font-medium shrink-0 ${DIFFICULTY_COLOR[q.difficulty] ?? ""}`}>
-                          {q.difficulty}
-                        </span>
-                        <span className="text-sm text-gray-800 group-hover:text-gray-900 line-clamp-1 flex-1">{q.title}</span>
-                        <svg className="w-3.5 h-3.5 text-indigo-300 group-hover:text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+                );
+              })()}
 
               <div>
                 <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Core Work</div>
