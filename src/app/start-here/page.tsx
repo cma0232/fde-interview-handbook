@@ -314,7 +314,7 @@ export default function StudyPlansPage() {
               {(() => {
                 const dayQs = (DAY_QUESTIONS[modal.day] ?? [])
                   .map((q) => questionsMap[q.id])
-                  .filter((q): q is NonNullable<typeof q> => q != null && q.title != null);
+                  .filter((q): q is NonNullable<typeof q> => q != null);
                 if (!dayQs.length) return null;
                 return (
                   <div className="rounded-xl overflow-hidden border border-indigo-100 bg-indigo-50">
