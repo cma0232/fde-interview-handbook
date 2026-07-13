@@ -61,7 +61,7 @@ export default async function CategoryPage({
   ]);
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-12">
+    <main className="w-full max-w-3xl mx-auto px-6 py-12">
       <div className="mb-2">
         <Link href="/practice" className="text-sm text-gray-400 hover:text-gray-600">
           ← Practice
