@@ -47,6 +47,10 @@ export const metadata: Metadata = {
     description: "The only prep guide built for FDE interviews — agentic system design, live demos, customer scenarios, LLM deployment.",
   },
   alternates: { canonical: BASE_URL },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
