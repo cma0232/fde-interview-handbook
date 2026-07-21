@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase-service";
 import { getAllFDEJobs } from "@/lib/jobs";
 
@@ -25,6 +26,8 @@ export async function POST(req: NextRequest) {
     .upsert(rows, { onConflict: "week,company" });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  revalidatePath("/trends/open-roles");
 
   return NextResponse.json({ ok: true, week, rows });
 }
