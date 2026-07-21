@@ -20,12 +20,18 @@ export default function FDETrendChart({ data }: { data: Snapshot[] }) {
         <XAxis
           dataKey="week"
           tick={{ fontSize: 11, fill: "#9ca3af" }}
-          tickFormatter={(v) => new Date(v).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+          tickFormatter={(v) => {
+            const [y, m, d] = (v as string).split("T")[0].split("-").map(Number);
+            return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+          }}
         />
         <YAxis tick={{ fontSize: 11, fill: "#9ca3af" }} />
         <Tooltip
           formatter={(v) => [`${v} open roles`, "FDE positions"]}
-          labelFormatter={(v) => new Date(v).toLocaleDateString("en-US", { month: "long", day: "numeric" })}
+          labelFormatter={(v) => {
+            const [y, m, d] = (v as string).split("T")[0].split("-").map(Number);
+            return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-US", { month: "long", day: "numeric", timeZone: "UTC" });
+          }}
           contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e5e7eb" }}
         />
         <Line

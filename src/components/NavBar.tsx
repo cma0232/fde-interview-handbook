@@ -100,6 +100,10 @@ export default function NavBar() {
         <Link href="/practice" className="text-[15px] text-gray-600 hover:text-gray-900 transition-colors">
           Practice Questions
         </Link>
+        <NavDropdown label="AI Native" items={[
+          { href: "/ai-native/tools", label: "Tools" },
+          { href: "/ai-native/blogs", label: "Blogs" },
+        ]} />
         <NavDropdown label="Time Savers" items={timeSaversItems} />
         <Link href="/trends/news" className="text-[15px] text-gray-600 hover:text-gray-900 transition-colors">
           Industry News

@@ -1,14 +1,5 @@
 import { createServiceClient } from "@/lib/supabase-service";
 
-// Return the Monday of the ISO week that dateStr falls in (Mon–Sun)
-function getWeekMonday(dateStr: string): string {
-  const d = new Date(dateStr);
-  const day = d.getUTCDay(); // 0=Sun, 1=Mon … 6=Sat
-  const diff = day === 0 ? -6 : 1 - day; // Sunday goes back 6 days, others back to Monday
-  d.setUTCDate(d.getUTCDate() + diff);
-  return d.toISOString().split("T")[0];
-}
-
 export async function getTrendData() {
   const db = createServiceClient();
   const { data } = await db
@@ -19,19 +10,8 @@ export async function getTrendData() {
 
   if (!data || data.length === 0) return [];
 
-  const byWeek = new Map<string, number>();
-  for (const row of data) {
-    const monday = getWeekMonday(row.week);
-    // If multiple rows in same week, keep the latest (highest count or last inserted)
-    byWeek.set(monday, row.count);
-  }
-
-  const today = new Date().toISOString().split("T")[0];
-
-  return Array.from(byWeek.entries())
-    .filter(([week]) => week <= today)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([week, total]) => ({ week, total }));
+  // Each TOTAL row is one data point — no bucketing needed
+  return data.map((row) => ({ week: row.week, total: row.count }));
 }
 
 export async function getLatestJobCount(): Promise<number> {
