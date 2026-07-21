@@ -1,11 +1,11 @@
 /**
  * Scrape total FDE job count from jobright.ai and upsert into Supabase.
  * Run: node scripts/scrape-jobright.mjs
- * Schedule: add to crontab, e.g. every Monday 9am:
- *   0 9 * * 1 cd /path/to/fde-prep && node scripts/scrape-jobright.mjs
+ * Schedule: GitHub Action runs daily at 9am UTC via .github/workflows/scrape-jobs.yml
  */
 
 import { chromium } from "playwright";
+import { writeFileSync } from "fs";
 
 const SUPABASE_URL = "https://qkfkgpkcvrbrsgxkaedq.supabase.co";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -15,26 +15,59 @@ if (!SUPABASE_SERVICE_KEY) {
   process.exit(1);
 }
 
-const URL = "https://jobright.ai/jobs/forward-deployed-engineer-jobs-in-united-states";
+const TARGET_URL = "https://jobright.ai/jobs/forward-deployed-engineer-jobs-in-united-states";
 
 async function scrape() {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
   const page = await browser.newPage();
 
-  await page.goto(URL, { waitUntil: "networkidle", timeout: 30000 });
+  // Mimic a real browser to reduce bot detection
+  await page.setExtraHTTPHeaders({
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+  });
 
-  // Wait for the result count text to appear
-  await page.waitForSelector("text=/\\d+ results for/", { timeout: 15000 });
+  try {
+    await page.goto(TARGET_URL, { waitUntil: "domcontentloaded", timeout: 45000 });
 
-  const text = await page.locator("text=/\\d+ results for/").first().textContent();
-  await browser.close();
+    // Wait for any of the known count patterns
+    const countSelectors = [
+      "text=/\\d+\\s+results? for/i",
+      "text=/\\d+\\s+jobs? found/i",
+      "text=/\\d+\\s+open roles/i",
+    ];
 
-  const match = text?.match(/[\d,]+/);
-  if (!match) throw new Error(`Could not parse count from: "${text}"`);
+    let countText = null;
+    for (const sel of countSelectors) {
+      try {
+        await page.waitForSelector(sel, { timeout: 20000 });
+        countText = await page.locator(sel).first().textContent();
+        console.log(`Found via selector "${sel}": ${countText}`);
+        break;
+      } catch {
+        console.log(`Selector not found: ${sel}`);
+      }
+    }
 
-  const count = parseInt(match[0].replace(/,/g, ""), 10);
-  console.log(`Scraped: ${count} jobs`);
-  return count;
+    if (!countText) {
+      // Dump page for debugging
+      const html = await page.content();
+      writeFileSync("/tmp/jobright-page.html", html);
+      await page.screenshot({ path: "/tmp/jobright-screenshot.png", fullPage: true });
+      console.error("No count selector matched. Saved /tmp/jobright-page.html and screenshot.");
+      throw new Error("Could not find job count on page — check /tmp/jobright-page.html");
+    }
+
+    const match = countText.match(/[\d,]+/);
+    if (!match) throw new Error(`Could not parse count from: "${countText}"`);
+
+    const count = parseInt(match[0].replace(/,/g, ""), 10);
+    console.log(`Scraped: ${count} jobs`);
+    return count;
+  } finally {
+    await browser.close();
+  }
 }
 
 async function upsert(count) {
