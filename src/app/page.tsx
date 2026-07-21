@@ -25,7 +25,7 @@ const jsonLd = {
 import FDETrendChart from "@/components/FDETrendChart";
 import CompanyTicker, { UnicornTicker } from "@/components/CompanyTicker";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 
 function floorToHundred(n: number) {
