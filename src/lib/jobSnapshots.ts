@@ -1,9 +1,10 @@
 import { createServiceClient } from "@/lib/supabase-service";
 
-function getNextMonday(dateStr: string): string {
+// Return the Monday of the ISO week that dateStr falls in (Mon–Sun)
+function getWeekMonday(dateStr: string): string {
   const d = new Date(dateStr);
-  const day = d.getUTCDay();
-  const diff = day === 0 ? 1 : 8 - day;
+  const day = d.getUTCDay(); // 0=Sun, 1=Mon … 6=Sat
+  const diff = day === 0 ? -6 : 1 - day; // Sunday goes back 6 days, others back to Monday
   d.setUTCDate(d.getUTCDate() + diff);
   return d.toISOString().split("T")[0];
 }
@@ -20,7 +21,8 @@ export async function getTrendData() {
 
   const byWeek = new Map<string, number>();
   for (const row of data) {
-    const monday = getNextMonday(row.week);
+    const monday = getWeekMonday(row.week);
+    // If multiple rows in same week, keep the latest (highest count or last inserted)
     byWeek.set(monday, row.count);
   }
 
