@@ -10,12 +10,13 @@ function getNextMonday(dateStr: string): string {
 
 export async function getTrendData() {
   const db = createServiceClient();
-  const { data } = await db
+  const { data, error } = await db
     .from("fde_job_snapshots")
     .select("week, count")
     .eq("company", "TOTAL")
     .order("week", { ascending: true });
 
+  console.log("[getTrendData] rows:", data?.length, "error:", error?.message);
   if (!data || data.length === 0) return [];
 
   const byWeek = new Map<string, number[]>();
