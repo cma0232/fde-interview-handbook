@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 import FDETrendChart from "@/components/FDETrendChart";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function OpenRolesPage() {
   const [established, startups, trendData, latestCount] = await Promise.all([

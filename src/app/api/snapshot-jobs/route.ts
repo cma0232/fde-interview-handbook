@@ -3,7 +3,8 @@ import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase-service";
 import { getAllFDEJobs } from "@/lib/jobs";
 
-export async function POST(req: NextRequest) {
+// Vercel cron sends GET requests
+export async function GET(req: NextRequest) {
   // Protect with a secret so only Vercel cron can call it
   const auth = req.headers.get("authorization");
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
   }
 
   const companies = await getAllFDEJobs();
-  const week = new Date().toISOString().split("T")[0]; // YYYY-MM-DD of Monday
+  const week = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
   const db = createServiceClient();
   const rows = companies.map((c) => ({
@@ -27,7 +28,8 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  revalidatePath("/");
   revalidatePath("/trends/open-roles");
 
-  return NextResponse.json({ ok: true, week, rows });
+  return NextResponse.json({ ok: true, week, count: rows.length });
 }
