@@ -29,7 +29,16 @@ async function scrape() {
   });
 
   try {
-    await page.goto(TARGET_URL, { waitUntil: "domcontentloaded", timeout: 45000 });
+    try {
+      await page.goto(TARGET_URL, { waitUntil: "domcontentloaded", timeout: 45000 });
+    } catch (gotoErr) {
+      // Save whatever the page has even if goto timed out
+      const html = await page.content().catch(() => "<empty>");
+      writeFileSync("/tmp/jobright-page.html", html);
+      await page.screenshot({ path: "/tmp/jobright-screenshot.png", fullPage: true }).catch(() => {});
+      console.error("page.goto failed:", gotoErr.message);
+      throw gotoErr;
+    }
 
     // Wait for any of the known count patterns
     const countSelectors = [
