@@ -5,6 +5,7 @@ import { createServiceClient } from "@/lib/supabase-service";
 function getNextMonday(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00Z"); // noon UTC to avoid timezone shift
   const day = d.getUTCDay(); // 0=Sun … 6=Sat
+  if (day === 1) return dateStr; // already Monday — show same day
   const diff = day === 0 ? 1 : 8 - day;
   d.setUTCDate(d.getUTCDate() + diff);
   return d.toISOString().split("T")[0];
