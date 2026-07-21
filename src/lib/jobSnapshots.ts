@@ -10,20 +10,20 @@ function getNextMonday(dateStr: string): string {
 
 export async function getTrendData() {
   const db = createServiceClient();
-  const { data, error } = await db
+  // Sum all per-company rows per week (exclude the TOTAL aggregate row to avoid double-counting)
+  const { data } = await db
     .from("fde_job_snapshots")
     .select("week, count")
-    .eq("company", "TOTAL")
+    .neq("company", "TOTAL")
     .order("week", { ascending: true });
 
-  console.log("[getTrendData] rows:", data?.length, "error:", error?.message);
   if (!data || data.length === 0) return [];
 
-  const byWeek = new Map<string, number[]>();
+  // Sum counts per week-Monday bucket
+  const byWeek = new Map<string, number>();
   for (const row of data) {
     const monday = getNextMonday(row.week);
-    if (!byWeek.has(monday)) byWeek.set(monday, []);
-    byWeek.get(monday)!.push(row.count);
+    byWeek.set(monday, (byWeek.get(monday) ?? 0) + row.count);
   }
 
   const today = new Date().toISOString().split("T")[0];
@@ -31,20 +31,27 @@ export async function getTrendData() {
   return Array.from(byWeek.entries())
     .filter(([week]) => week <= today)
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([week, counts]) => ({
-      week,
-      total: Math.round(counts.reduce((s, c) => s + c, 0) / counts.length),
-    }));
+    .map(([week, total]) => ({ week, total }));
 }
 
 export async function getLatestJobCount(): Promise<number> {
   const db = createServiceClient();
-  const { data } = await db
+  // Sum all company counts for the latest week
+  const { data: latestWeekData } = await db
     .from("fde_job_snapshots")
-    .select("count")
-    .eq("company", "TOTAL")
+    .select("week")
+    .neq("company", "TOTAL")
     .order("week", { ascending: false })
     .limit(1);
 
-  return data?.[0]?.count ?? 0;
+  if (!latestWeekData?.[0]) return 0;
+
+  const latestWeek = latestWeekData[0].week;
+  const { data } = await db
+    .from("fde_job_snapshots")
+    .select("count")
+    .neq("company", "TOTAL")
+    .eq("week", latestWeek);
+
+  return data?.reduce((sum, r) => sum + r.count, 0) ?? 0;
 }

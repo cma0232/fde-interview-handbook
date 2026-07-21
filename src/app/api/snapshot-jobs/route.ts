@@ -15,11 +15,11 @@ export async function GET(req: NextRequest) {
   const week = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
   const db = createServiceClient();
-  const rows = companies.map((c) => ({
-    week,
-    company: c.name,
-    count: c.count,
-  }));
+  const totalCount = companies.reduce((sum, c) => sum + c.count, 0);
+  const rows = [
+    ...companies.map((c) => ({ week, company: c.name, count: c.count })),
+    { week, company: "TOTAL", count: totalCount },
+  ];
 
   // Upsert to avoid duplicates if run multiple times in same week
   const { error } = await db
