@@ -7,7 +7,7 @@
 
 import { chromium } from "playwright";
 
-const SUPABASE_URL = "https://sytaxalwtgbgvgrausas.supabase.co";
+const SUPABASE_URL = "https://qkfkgpkcvrbrsgxkaedq.supabase.co";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_SERVICE_KEY) {
