@@ -66,7 +66,15 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <NavBar />
         <WelcomeEmailTrigger />
-        {children}
+        <div className="flex-1">{children}</div>
+        <footer className="border-t px-6 py-6 text-center text-sm text-gray-400">
+          <a
+            href="mailto:support@fdehandbook.com"
+            className="hover:text-gray-600 transition-colors"
+          >
+            support@fdehandbook.com
+          </a>
+        </footer>
         <Analytics />
       </body>
     </html>
