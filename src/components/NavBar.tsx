@@ -111,12 +111,6 @@ export default function NavBar() {
       </div>
 
       <div className="flex items-center gap-3">
-        <a
-          href="mailto:support@fdehandbook.com"
-          className="text-[15px] text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          Contact
-        </a>
         <Link
           href="/upgrade"
           className="text-[15px] border border-gray-300 text-gray-700 px-3.5 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
